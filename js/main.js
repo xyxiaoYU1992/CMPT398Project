@@ -48,8 +48,46 @@ var svg = d3.select("#GoTVis").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
+// Create data var
+var characters;
+var housesDict = {};
+var numChars = 56;
+
+// Create temp var
+var tempHouseList;
+var tempAppear;
+
+// Manually sorted the characters based on their appearances
+var characterOrder = ["Tyrion Lannister", "Cersei Lannister", "Daenerys Targaryen", "Jon Snow", "Sansa Stark", 
+                      "Arya Stark", "Jorah Mormont", "Jaime Lannister", "Samwell Tarly", "Theon Greyjoy", 
+                      "Petyr Baelish", "Varys", "Brienne of Tarth", "Tywin Lannister", "Sandor Clegane", "Bronn", 
+                      "Joffrey Baratheon", "Barristan Selmy", "Bran Stark", "Catelyn Stark", "Stannis Baratheon", 
+                      "Missandei", "Podrick Payne", "Robb Stark", "Margaery Tyrell", "Davos Seaworth", "Shae", 
+                      "Melisandre", "Gilly", "Tommen Baratheon", "Loras Tyrell", "Olenna Tyrell", "Tormund", 
+                      "Grey Worm", "Roose Bolton", "Ygritte", "Gendry", "Ramsay Bolton", "Daario Naharis", 
+                      "Yara Greyjoy", "Jaqen H'ghar", "Myrcella Baratheon", "Lancel Lannister", "Kevan Lannister", 
+                      "Jeor Mormont", "Eddard Stark", "Shireen Baratheon", "Khal Drogo", "Edmure Tully", "Robin Arryn", 
+                      "Renly Baratheon", "Oberyn Martell", "Robert Baratheon", "Walder Frey"];
+
 // Read data
 d3.csv('lotr_words_location.json', function (data) {
+	characters = data;
+	//Find the total number of appearance per house
+	for (var i = 0; i < numChars; i++) {
+		tempHouseList = (characters[i]['houseallegiance'] != '') ? characters[i]['houseallegiance'].split(', ') : [];
+        tempAppear = characters[i]['appeared'];
+		for (var j = 0; j < tempHouseList.length; i++) {
+			if (tempHouseList[j] in housesDict) {
+				housesDict[tempHouseList[j]] += tempAppear;
+			} else {
+			    housesDict[tempHouseList[j]] = tempAppear;
+			}
+		}
+	}
+	//Sort the inner characters based on the total number of episodes appearance
+	
+	
+}
 
 
 
