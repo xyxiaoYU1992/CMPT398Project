@@ -27,7 +27,7 @@ var defaultOpacity = 0.85,
 var loom = d3.loom()
     .value(function(d){ return d.appeared})
     .inner(function(d){ return d.name})
-    .outer(function(d){ return Object.keys(housesDict)}) // TO DO: extract houses from characters, repeat characters allowed.
+    .outer(function(d){ return d.name}) // TO DO: extract houses from characters, repeat characters allowed.
 
 // Set up appearence 
 loom.padAngle(0.05)
@@ -75,17 +75,17 @@ var characterOrder = ["Tyrion Lannister", "Cersei Lannister", "Daenerys Targarye
 d3.csv('data/thrones_characters.csv', function (data) {
     characters = data;
     // Find the total number of appearance per house
-    for (var i = 0; i < numChars; i++) {
-        tempHouseList = (characters[i]['houseallegiance'] != '') ? characters[i]['houseallegiance'].split(', ') : [];
-        tempAppear = characters[i]['appeared'];
-        for (var j = 0; j < tempHouseList.length; i++) {
-            if (tempHouseList[j] in housesDict) {
-                housesDict[tempHouseList[j]] += tempAppear;
-            } else {
-                housesDict[tempHouseList[j]] = tempAppear;
-            }
-        }
-    }
+    // for (var i = 0; i < numChars; i++) {
+    //     tempHouseList = (characters[i]['houseallegiance'] != '') ? characters[i]['houseallegiance'].split(', ') : [];
+    //     tempAppear = characters[i]['appeared'];
+    //     for (var j = 0; j < tempHouseList.length; i++) {
+    //         if (tempHouseList[j] in housesDict) {
+    //             housesDict[tempHouseList[j]] += tempAppear;
+    //         } else {
+    //             housesDict[tempHouseList[j]] = tempAppear;
+    //         }
+    //     }
+    // }
     // Sort the inner characters based on the total number of episodes appearance
     function sortCharacter(a, b) {
         return characterOrder.indexOf(a) - characterOrder.indexOf(b); 
@@ -105,7 +105,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
     //Create a group that already holds the data
     var g = svg.append("g")
         .attr("transform", "translate(" + (width/2 + margin.left) + "," + (height/2 + margin.top) + ")")
-        .datum(loom(dataAgg));
+        .datum(loom(data));
 
     // Draw outer arcs
     var houseArcs = g.append("g")
@@ -159,7 +159,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
               .style("opacity", 1);
         });
 
-    var outerArcs = arcs.append("path")
+    var outerArcs = houseArcs.append("path")
         .attr("class", "arc")
         .style("fill", function(d) { return color(d.outername); })
         .attr("d", arc)
@@ -169,7 +169,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
 
     // Draw outter labels
     // The text needs to be rotated with the offset in the clockwise direction
-    var outerLabels = arcs.append("g")
+    var outerLabels = houseArcs.append("g")
         .each(function(d) {
         	d.angle = ((d.startAngle + d.endAngle) / 2);
         })
