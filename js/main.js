@@ -24,6 +24,7 @@ var defaultOpacity = 0.85,
     fadeOpacity = 0.075;
 
 // Set up the data assessors
+var numFormat = d3.format(",.0f");
 var loom = d3.loom()
     .value(function(d){ return d.appeared})
     .inner(function(d){ return d.name})
@@ -54,7 +55,7 @@ var housesDict = {};
 var numChars = 54;
 
 // Create temp var
-var tempHouseList;
+// var tempHouseList;
 var tempAppear;
 
 // Manually sorted the characters based on their appearances
@@ -74,7 +75,33 @@ var characterOrder = ["Tyrion Lannister", "Cersei Lannister", "Daenerys Targarye
 // Read data
 d3.csv('data/thrones_characters.csv', function (data) {
     characters = data;
+    // console.log(characters);
+    //separate the allengiance into an array
+    for(var i = 0; i < numChars; i++){
+        console.log(characters[i].houseallegiance);
+        characters[i].houseallegiance = characters[i].houseallegiance.split(", ")
+    }
+    // console.log(characters);
     // Find the total number of appearance per house
+    // Create a House dictionary to store the houses and its members appearence infomation
+    for(var i = 0; i < numChars; i++){
+        for(var j = 0; j < characters[i].houseallegiance.length; j++){
+             housesDict[characters[i].houseallegiance[j]] = {appeared:0};
+        }
+    }
+    //test the housesDict appeared should be all 0
+    //console.log(housesDict);
+    for(var i = 0; i < numChars; i++){
+        for(var j = 0; j < characters[i].houseallegiance.length; j++){
+             if(characters[i].houseallegiance[j] in housesDict){
+                housesDict[characters[i].houseallegiance[j]].appeared = housesDict[characters[i].houseallegiance[j]].appeared + parseFloat(characters[i].appeared); 
+             }
+        }
+    }
+    //test the housesDict after input the data
+    console.log(housesDict);
+    console.log(Object.keys(housesDict));
+
     // for (var i = 0; i < numChars; i++) {
     //     tempHouseList = (characters[i]['houseallegiance'] != '') ? characters[i]['houseallegiance'].split(', ') : [];
     //     tempAppear = characters[i]['appeared'];
@@ -86,11 +113,14 @@ d3.csv('data/thrones_characters.csv', function (data) {
     //         }
     //     }
     // }
+    //console.log(tempHouseList);
+    // console.log(housesDict);
     // Sort the inner characters based on the total number of episodes appearance
     function sortCharacter(a, b) {
         return characterOrder.indexOf(a) - characterOrder.indexOf(b); 
     }
     // Set more loom functions
+    // TO-DO: the heightInner should be changed
     loom.sortSubgroups(sortCharacter)
         .heightInner(innerRadius*0.75/characterOrder.length);
     // Color for the unique houses
@@ -115,7 +145,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
             return s.groups;
         })
         .enter()
-        .append(g)
+        .append("g")
         .attr("class", "arc-wrapper")
         .each(function(d) {
             d.pullOutSize = (pullOutSize * ( d.startAngle > Math.PI + 1e-2 ? -1 : 1));
