@@ -51,6 +51,7 @@ var svg = d3.select("#GoTVis").append("svg")
 
 // Create data var
 var characters;
+var cleanedChars = [];
 var housesDict = {};
 var numChars = 54;
 
@@ -78,7 +79,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
     // console.log(characters);
     //separate the allengiance into an array
     for(var i = 0; i < numChars; i++){
-        console.log(characters[i].houseallegiance);
+        //console.log(characters[i].houseallegiance);
         characters[i].houseallegiance = characters[i].houseallegiance.split(", ")
     }
     // console.log(characters);
@@ -98,9 +99,30 @@ d3.csv('data/thrones_characters.csv', function (data) {
              }
         }
     }
+    // Clean raw data, transform it into list of object
+    for (var i = 0; i < numChars; i++) {
+        if (characters[i].houseallegiance.length > 1) {
+            for (var j = 0; j < characters[i].houseallegiance.length; j++) {
+                cleanedChars.push({name: characters[i].name, houseallegiance: characters[i].houseallegiance[j]
+                                 , appeared: characters[i].appeared, culture: characters[i].culture
+                                 , deathcause: characters[i].deathcause, gender: characters[i].gender
+                                 , image: characters[i].image, origin: characters[i].origin
+                                 , portrayed: characters[i].portrayed, religion: characters[i].religion
+                                 , season: characters[i].season, status: characters[i].status});
+            }
+        } else {
+            cleanedChars.push({name: characters[i].name, houseallegiance: characters[i].houseallegiance
+                             , appeared: characters[i].appeared, culture: characters[i].culture
+                             , deathcause: characters[i].deathcause, gender: characters[i].gender
+                             , image: characters[i].image, origin: characters[i].origin
+                             , portrayed: characters[i].portrayed, religion: characters[i].religion
+                             , season: characters[i].season, status: characters[i].status});
+        }
+    }
     //test the housesDict after input the data
-    console.log(housesDict);
-    console.log(Object.keys(housesDict));
+    console.log(cleanedChars);
+    // console.log(housesDict);
+    // console.log(Object.keys(housesDict));
 
     // for (var i = 0; i < numChars; i++) {
     //     tempHouseList = (characters[i]['houseallegiance'] != '') ? characters[i]['houseallegiance'].split(', ') : [];
