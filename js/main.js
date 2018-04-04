@@ -28,7 +28,7 @@ var numFormat = d3.format(",.0f");
 var loom = d3.loom()
     .value(function(d){ return d.appeared})
     .inner(function(d){ return d.name})
-    .outer(function(d){ return d.name}) // TO DO: extract houses from characters, repeat characters allowed.
+    .outer(function(d){ return d.houseallegiance}) // TO DO: extract houses from characters, repeat characters allowed.
 
 // Set up appearence 
 loom.padAngle(0.05)
@@ -50,8 +50,9 @@ var svg = d3.select("#GoTVis").append("svg")
     .attr("height", height + margin.top + margin.bottom);
 
 // Create data var
-var characters;
-var cleanedChars = [];
+var characters; // read from csv
+var cleanedChars = []; // Transform characters into list of object
+var cleanedCharsJSON; // stringify cleanedChars
 var housesDict = {};
 var numChars = 54;
 
@@ -104,7 +105,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
         if (characters[i].houseallegiance.length > 1) {
             for (var j = 0; j < characters[i].houseallegiance.length; j++) {
                 cleanedChars.push({name: characters[i].name, houseallegiance: characters[i].houseallegiance[j]
-                                 , appeared: characters[i].appeared, culture: characters[i].culture
+                                 , appeared: parseInt(characters[i].appeared), culture: characters[i].culture
                                  , deathcause: characters[i].deathcause, gender: characters[i].gender
                                  , image: characters[i].image, origin: characters[i].origin
                                  , portrayed: characters[i].portrayed, religion: characters[i].religion
@@ -112,7 +113,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
             }
         } else {
             cleanedChars.push({name: characters[i].name, houseallegiance: characters[i].houseallegiance
-                             , appeared: characters[i].appeared, culture: characters[i].culture
+                             , appeared: parseInt(characters[i].appeared), culture: characters[i].culture
                              , deathcause: characters[i].deathcause, gender: characters[i].gender
                              , image: characters[i].image, origin: characters[i].origin
                              , portrayed: characters[i].portrayed, religion: characters[i].religion
@@ -120,23 +121,24 @@ d3.csv('data/thrones_characters.csv', function (data) {
         }
     }
     //test the housesDict after input the data
+    cleanedCharsJSON = JSON.stringify(cleanedChars);
+    // console.log(cleanedCharsJSON);
     console.log(cleanedChars);
     // console.log(housesDict);
     // console.log(Object.keys(housesDict));
+// });
 
-    // for (var i = 0; i < numChars; i++) {
-    //     tempHouseList = (characters[i]['houseallegiance'] != '') ? characters[i]['houseallegiance'].split(', ') : [];
-    //     tempAppear = characters[i]['appeared'];
-    //     for (var j = 0; j < tempHouseList.length; i++) {
-    //         if (tempHouseList[j] in housesDict) {
-    //             housesDict[tempHouseList[j]] += tempAppear;
-    //         } else {
-    //             housesDict[tempHouseList[j]] = tempAppear;
-    //         }
-    //     }
-    // }
-    //console.log(tempHouseList);
-    // console.log(housesDict);
+// d3.json(cleanedCharsJSON, function (error, dataAgg) {
+    var nestedChar = d3.nest()
+        .key(function(d) {
+            return d.name;
+        })
+        .rollup(function(leaves) { 
+            return d3.sum(leaves, function(d) { 
+                return d.appeared; 
+            }); 
+        })
+        .entries(cleanedChars);
     // Sort the inner characters based on the total number of episodes appearance
     function sortCharacter(a, b) {
         return characterOrder.indexOf(a) - characterOrder.indexOf(b); 
@@ -144,7 +146,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
     // Set more loom functions
     // TO-DO: the heightInner should be changed
     loom.sortSubgroups(sortCharacter)
-        .heightInner(innerRadius*0.75/characterOrder.length);
+        .heightInner(innerRadius*2.35/characterOrder.length);
     // Color for the unique houses
     var colors = ["#5a3511", "#47635f", "#223e15", "#C6CAC9", "#0d1e25", "#53821a", "#4387AA", "#770000", 
                   "#373F41", "#602317", "#8D9413", "#c17924", "#3C7E16", "#DC143C", "#483D8B", "#800080", 
@@ -154,10 +156,32 @@ d3.csv('data/thrones_characters.csv', function (data) {
         .domain(Object.keys(housesDict))
         .range(colors);
 
-    //Create a group that already holds the data
+    // Create a group that already holds the data
     var g = svg.append("g")
         .attr("transform", "translate(" + (width/2 + margin.left) + "," + (height/2 + margin.top) + ")")
-        .datum(loom(data));
+        .datum(loom(cleanedChars));
+
+    // Set-up title
+    var titles = g.append("g")
+        .attr("class", "texts")
+        .style("opacity", 0);
+        
+    titles.append("text")
+        .attr("class", "name-title")
+        .attr("x", 0)
+        .attr("y", -innerRadius*5/6 - 105);
+        
+    titles.append("text")
+        .attr("class", "value-title")
+        .attr("x", 0)
+        .attr("y", -innerRadius*5/6 - 85);
+    
+    // //The character pieces  
+    // titles.append("text")
+    //     .attr("class", "character-note")
+    //     .attr("x", 0)
+    //     .attr("y", innerRadius/2)
+    //     .attr("dy", "0.35em");
 
     // Draw outer arcs
     var houseArcs = g.append("g")
@@ -186,7 +210,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
                 return s.outer.outername === d.outername ? 1 : fadeOpacity;
               });
             // Find the data for the strings of the hovered over house
-            var houseData = loom(data).filter(function(s) { return s.outer.outername === d.outername; });
+            var houseData = loom(cleanedChars).filter(function(s) { return s.outer.outername === d.outername; });
             // Hide the characters who don't allegiance that house
             d3.selectAll(".inner-label")
               .transition()
@@ -291,7 +315,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
 					return s.outer.innername !== d.name ? fadeOpacity : 1;
 				});	
 			//Update the appearance count of the outer labels
-			var characterData = loom(data).filter(function(s) { return s.outer.innername === d.name; });
+			var characterData = loom(cleanedChars).filter(function(s) { return s.outer.innername === d.name; });
 			d3.selectAll(".outer-label-value")
 				.text(function(s,i){
 					//Find which characterData is the correct one based on house
@@ -319,7 +343,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
 				.text(d.name);
 			d3.select(".value-title")
 				.text(function() {
-					var appear = dataChar.filter(function(s) { return s.key === d.name; });
+					var appear = nestedChar.filter(function(s) { return s.key === d.name; });
 					return appear[0].value;
 				});
 			//Show the character note
