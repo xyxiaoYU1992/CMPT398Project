@@ -6,9 +6,11 @@
 // var radius = diameter / 2;
 // var innerRadius = radius - 270;
 
-var margin = {left:80, top:40, right:120, bottom:50},
+var margin = {left:180, top:40, right:120, bottom:50},
     width = Math.max( Math.min(window.innerWidth, 1100) - margin.left - margin.right - 20, 400),
     height = Math.max( Math.min(window.innerHeight - 250, 900) - margin.top - margin.bottom - 20, 400),
+    // width = 1900;
+    // height = 1900;
     innerRadius = Math.min(width * 0.33, height * .45),
     outerRadius = innerRadius * 1.05;
 
@@ -33,7 +35,7 @@ var loom = d3.loom()
 // Set up appearence 
 loom.padAngle(0.05)
     .widthInner(30)
-    .heightInner(20)
+    .heightInner(20) // TO-DO
     .emptyPerc(0.2)
 
 var arc = d3.arc()
