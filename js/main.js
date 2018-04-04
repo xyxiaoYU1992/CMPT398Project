@@ -148,7 +148,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
     loom.sortSubgroups(sortCharacter)
         .heightInner(innerRadius*2.35/characterOrder.length);
     // Color for the unique houses
-    var colors = ["#5a3511", "#47635f", "#223e15", "#C6CAC9", "#0d1e25", "#53821a", "#4387AA", "#770000", 
+    var colors = ["#5a3511", "#47635f", "#223e15", "#FF0000", "#0d1e25", "#53821a", "#4387AA", "#770000", 
                   "#373F41", "#602317", "#8D9413", "#c17924", "#3C7E16", "#DC143C", "#483D8B", "#800080", 
                   "#1E90FF", "#F08080", "#FFA500", "#ADFF2F", "#DDA0DD", "#BDB76B", "#00FF00", "#48D1CC",
                   "#9370DB", "#00FFFF", "#20B2AA", "#87CEFA", "#FFD700", "#DA70D6", "#808080", "#FFDEAD"];
