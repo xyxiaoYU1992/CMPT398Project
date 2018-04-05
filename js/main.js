@@ -449,9 +449,9 @@ function setPopupPosition(e){
 		}
 	}
 
-	// if(e.pageY + $('#node-info').outerHeight() + 20 > $(document).height() ){
-	// 	mouseY = e.pageY - 20 - $('#node-info').outerHeight();
-	// }
+	if(e.pageY + $('#node-info').outerHeight() + 20 > $(document).height() ){
+		mouseY = e.pageY - 20 - $('#node-info').outerHeight();
+	}
 
 	$('.got-popup').css({
 		top: mouseY,
