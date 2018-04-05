@@ -2,15 +2,11 @@
 // Author: Ruida Xie & Tong Wang
 
 // Set up geometric size
-// var diameter = 940;
-// var radius = diameter / 2;
-// var innerRadius = radius - 270;
-
 var margin = {left:180, top:40, right:120, bottom:50},
     width = Math.max( Math.min(window.innerWidth, 1100) - margin.left - margin.right - 20, 400),
     height = Math.max( Math.min(window.innerHeight - 250, 900) - margin.top - margin.bottom - 20, 400),
-    // width = 1900;
-    // height = 1900;
+    // width = 1200;
+    // height = 1200;
     innerRadius = Math.min(width * 0.33, height * .45),
     outerRadius = innerRadius * 1.05;
 
@@ -33,7 +29,7 @@ var loom = d3.loom()
     .outer(function(d){ return d.houseallegiance}) // TO DO: extract houses from characters, repeat characters allowed.
 
 // Set up appearence 
-loom.padAngle(0.05)
+loom.padAngle(0.09)
     .widthInner(30)
     .heightInner(20) // TO-DO
     .emptyPerc(0.2)

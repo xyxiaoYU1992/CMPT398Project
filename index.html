@@ -7,17 +7,17 @@
 		<!-- Mobile Specific Metas -->
 	    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<!-- Google fonts -->
-		<!-- <link href="https://fonts.googleapis.com/css?family=Macondo+Swash+Caps|Macondo" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css?family=Cormorant:300,400" rel="stylesheet"> -->
+		<link href="https://fonts.googleapis.com/css?family=Macondo+Swash+Caps|Macondo" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Cormorant:300,400" rel="stylesheet">
 	    <!-- Script-->
 		<!-- <script type="text/javascript" src="js/d3.js"></script>	 -->
-		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-		<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-		<script src="https://d3js.org/d3.v4.min.js"></script>
-		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-		<script src="js/jquery.tmpl.min.js"></script>
+		<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> -->
+		<!-- <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script> -->
+		<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery.tmpl.min.js"></script>
 		<script type="text/javascript" src="js/loom.js"></script>
-		<!-- <script type="text/javascript" src="js/main.js"></script> -->
+
 		<script id="charTemplate" type="text/x-jquery-tmpl">
 			<div id='node-name'>${name}</div>
 	
@@ -55,7 +55,7 @@
 			</div>
 		</script>
 	
-		<script id="deathTemplate" type="text/x-jquery-tmpl">
+		<!-- <script id="deathTemplate" type="text/x-jquery-tmpl">
 			<div class='node-char-tags' id='node-tags'>
 				<div class='node-data-color' style='background-color: ${color};'></div>
 				<div class='node-data-wide'>${count} killed by ${name}</div>
@@ -67,7 +67,7 @@
 				<div class='node-data-color' style='background-color: ${color};'></div>
 				<div class='node-data-wide'>${count} characters are in allegiance with ${name}</div>
 			</div>
-		</script>
+		</script> -->
 	
 		<script id="listTemplate" type="text/x-jquery-tmpl">
 			<div class='node-list-item'>${item}</div>
@@ -76,11 +76,19 @@
 		<link href="style.css" rel="stylesheet">
 	</head>
 	<body>
+		</br><img src="got.png">
+	    <!-- <br></br><br></br><br></br><br></br><br></br><br></br> -->
 		<div id='node-info' class='got-popup'></div>
 		<div class="wrap">
 			<div id="GoTVis"></div>
 		</div>
 		<button class='button' id='btn-death'>Show Deceased</button>
+		<button class="button" id="btn-back" onclick="refreshFunc()">Back To Main Vis</button>
+		<script>
+			function refreshFunc() {
+				location.reload();
+			}
+		</script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/death.js"></script>
 	</body>
