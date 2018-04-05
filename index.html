@@ -11,14 +11,73 @@
 		<link href="https://fonts.googleapis.com/css?family=Cormorant:300,400" rel="stylesheet"> -->
 	    <!-- Script-->
 		<!-- <script type="text/javascript" src="js/d3.js"></script>	 -->
+		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="js/jquery.tmpl.min.js"></script>
 		<script type="text/javascript" src="js/loom.js"></script>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<!-- <script type="text/javascript" src="js/main.js"></script> -->
+		<script id="charTemplate" type="text/x-jquery-tmpl">
+			<div id='node-name'>${name}</div>
+	
+			<div class='node-char' id='node-image-references'>
+				<img src="${imagesrc}" alt="thrones" width="100" height="100">
+			</div>
+			<div class='node-char' id='node-char-appearance'>
+				<div class='node-label'>Status</div>
+				<div class='node-data-color' style='background-color: ${color};'></div>
+				<div class='node-data-short'>${status}</div>
+			</div>
+			<div class='node-char' id='node-house-references'>
+				<div class='node-label'>House</div>
+				<div class='node-data'></div>
+			</div>
+			<div class='node-char' id='node-episode-references'>
+				<div class='node-label'>Appearance</div>
+				<div class='node-data'>${episodes} episodes</div>
+			</div>
+			<div class='node-char' id='node-season-references'>
+				<div class='node-label'>Season(s)</div>
+				<div class='node-data'>${season}</div>
+			</div>
+			<div class='node-char' id='node-culture'>
+				<div class='node-label'>Culture</div>
+				<div class='node-data'>${culture}</div>
+			</div>
+			<div class='node-char' id='node-religion'>
+				<div class='node-label'>Religion</div>
+				<div class='node-data'>${religion}</div>
+			</div>
+			<div class='node-char' id='node-portrayed'>
+				<div class='node-label'>Portrayed</div>
+				<div class='node-data'>${portrayed}</div>
+			</div>
+		</script>
+	
+		<script id="deathTemplate" type="text/x-jquery-tmpl">
+			<div class='node-char-tags' id='node-tags'>
+				<div class='node-data-color' style='background-color: ${color};'></div>
+				<div class='node-data-wide'>${count} killed by ${name}</div>
+			</div>
+		</script>
+	
+		<script id="allegianceTemplate" type="text/x-jquery-tmpl">
+			<div class='node-char-tags' id='node-tags'>
+				<div class='node-data-color' style='background-color: ${color};'></div>
+				<div class='node-data-wide'>${count} characters are in allegiance with ${name}</div>
+			</div>
+		</script>
+	
+		<script id="listTemplate" type="text/x-jquery-tmpl">
+			<div class='node-list-item'>${item}</div>
+		</script>
 		<!-- CSS-->
 		<link href="style.css" rel="stylesheet">
 	</head>
 	<body>
+		<div id='node-info' class='got-popup'></div>
 		<div class="wrap">
 			<div id="GoTVis"></div>
 		</div>
