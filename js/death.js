@@ -34,7 +34,7 @@ $("#btn-death").click(function(){
         .outer(function(d){ return d.name}) 
 
     // Set up appearence 
-    loom.padAngle(0.05)
+    loom.padAngle(0.09)
         .widthInner(30)
         .heightInner(20) // TO-DO
         .emptyPerc(0.2)
@@ -125,6 +125,7 @@ $("#btn-death").click(function(){
         // Set more loom functions
         // TO-DO: the heightInner should be changed
         loom.sortSubgroups(sortCharacter)
+            .sortGroups(d3.ascending)
             .heightInner(innerRadius*2.35/deathCauseOrder.length);
         // Color for the unique houses
         var colors = ["#5a3511", "#47635f", "#223e15", "#FF0000", "#0d1e25", "#53821a", "#4387AA", "#770000", 
