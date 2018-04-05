@@ -374,7 +374,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
                     portrayed: tempInnerInfo.portrayed                
                 }
             ).appendTo( "#node-info");
-            console.log(tempInnerInfo.deathcause)
+            // console.log(tempInnerInfo.deathcause)
             var houses = tempInnerInfo.houseallegiance;
             $.each(houses, function(i, t){
                 $("#listTemplate").tmpl( {item: t}).appendTo( "#node-house-references .node-data" );
@@ -417,14 +417,19 @@ function getStatusColor(status){
 function setPopupPosition(e){
 	e = jQuery.event.fix(e);
 	mouseX = e.pageX;
-	mouseY = e.pageY;
+    mouseY = e.pageY;
+    // console.log(mouseY);
+    // console.log($('#GoTVis').offset().top);
+    // console.log($('#GoTVis').outerHeight()/2);
 
 	if(mouseY < $('#GoTVis').offset().top + $('#GoTVis').outerHeight()/2){
 		//bottom
-		mouseY -= $('#node-info').outerHeight() + 10;
+        // mouseY -= $('#node-info').outerHeight() + 10;
+        mouseY += 10;
 	} else {
 		//top
-		 mouseY += 10;
+        // mouseY += 10;
+        mouseY -= $('#node-info').outerHeight() + 10
 	}
 
 	if(mouseX < $('#GoTVis').offset().left + $('#GoTVis').outerWidth()/2 ){
@@ -444,9 +449,9 @@ function setPopupPosition(e){
 		}
 	}
 
-	if(e.pageY + $('#node-info').outerHeight() + 20 > $(document).height() ){
-		mouseY = e.pageY - 20 - $('#node-info').outerHeight();
-	}
+	// if(e.pageY + $('#node-info').outerHeight() + 20 > $(document).height() ){
+	// 	mouseY = e.pageY - 20 - $('#node-info').outerHeight();
+	// }
 
 	$('.got-popup').css({
 		top: mouseY,
