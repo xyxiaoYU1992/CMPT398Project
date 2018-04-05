@@ -26,13 +26,13 @@ var numFormat = d3.format(",.0f");
 var loom = d3.loom()
     .value(function(d){ return d.appeared})
     .inner(function(d){ return d.name})
-    .outer(function(d){ return d.houseallegiance}) // TO DO: extract houses from characters, repeat characters allowed.
+    .outer(function(d){ return d.houseallegiance})
 
 // Set up appearence 
-loom.padAngle(0.09)
+loom.padAngle(0.05)
     .widthInner(30)
     .heightInner(20) // TO-DO
-    .emptyPerc(0.2)
+    .emptyPerc(0.3)
 
 var arc = d3.arc()
     .innerRadius(innerRadius*1.01)
