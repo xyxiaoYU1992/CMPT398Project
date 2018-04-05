@@ -59,7 +59,7 @@ var housesDict = {};
 var numChars = 54;
 
 // Create temp var
-// var tempHouseList;
+var tempInnerInfo;
 var tempAppear;
 
 // Manually sorted the characters based on their appearances
@@ -125,7 +125,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
     //test the housesDict after input the data
     cleanedCharsJSON = JSON.stringify(cleanedChars);
     // console.log(cleanedCharsJSON);
-    console.log(cleanedChars);
+    // console.log(cleanedChars);
     // console.log(housesDict);
     // console.log(Object.keys(housesDict));
 // });
@@ -300,7 +300,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
 		.attr("class","inner-labels")
 	    .selectAll("text")
 	    .data(function(s) { 
-			return s.innergroups; 
+            return s.innergroups;
 		})
 	    .enter().append("text")
 		.attr("class", "inner-label")
@@ -310,6 +310,15 @@ d3.csv('data/thrones_characters.csv', function (data) {
 		.attr("dy", ".35em")
 	    .text(function(d,i) { return d.name; })
  	 	.on("mouseover", function(d) {
+            //Empty the popup infomation
+
+            for(var i = 0; i < characters.length; i++){
+                if(d.name == characters[i].name){
+                    tempInnerInfo = characters[i];
+                }
+            }
+            // console.log(tempInnerInfo)
+
 			//Show all the strings of the highlighted character and hide all else
 		    d3.selectAll(".string")
 		      	.transition()
@@ -351,9 +360,34 @@ d3.csv('data/thrones_characters.csv', function (data) {
 			//Show the character note
 			// d3.selectAll(".character-note")
 			// 	.text(characterNotes[d.name])
-			// 	.call(wrap, 2.25*pullOutSize);		
+            // 	.call(wrap, 2.25*pullOutSize);
+            $("#node-info").empty();
+            // console.log(tempInnerInfo);
+            // console.log(tempInnerInfo.houseallegiance);
+            $("#charTemplate").tmpl(
+                {              
+                    name: tempInnerInfo.name,
+                    house: tempInnerInfo.houseallegiance,
+                    color: getStatusColor(tempInnerInfo.status),
+                    imagesrc: tempInnerInfo.image,
+                    episodes: tempInnerInfo.appeared,
+                    status: tempInnerInfo.status,
+                    season: tempInnerInfo.season,
+                    religion: tempInnerInfo.religion,
+                    culture: tempInnerInfo.culture,
+                    portrayed: tempInnerInfo.portrayed                
+                }
+            ).appendTo( "#node-info");
+            console.log(tempInnerInfo.deathcause)
+            var houses = tempInnerInfo.houseallegiance;
+            $.each(houses, function(i, t){
+                $("#listTemplate").tmpl( {item: t}).appendTo( "#node-house-references .node-data" );
+            })            
+            $("#node-info").show();		
 		})
      	.on("mouseout", function(d) {
+            //hide the popup
+            $("#node-info").hide();
 			//Put the string opacity back to normal
 		    d3.selectAll(".string")
 		      	.transition()
@@ -369,8 +403,60 @@ d3.csv('data/thrones_characters.csv', function (data) {
 			d3.selectAll(".texts")
 				.transition()
 				.style("opacity", 0);
-		});
+        });
+        $('.inner-label').mousemove(setPopupPosition);
 });
+
+// set the color for the character status
+function getStatusColor(status){
+	if (status == 'Alive') {
+		color = '#7EFF2B';
+	} else {
+		color = '#00302B';
+	}
+	return color;
+}
+
+// the function to set up the position
+function setPopupPosition(e){
+	e = jQuery.event.fix(e);
+	mouseX = e.pageX;
+	mouseY = e.pageY;
+
+	if(mouseY < $('#GoTVis').offset().top + $('#GoTVis').outerHeight()/2){
+		//bottom
+		mouseY -= $('#node-info').outerHeight() + 10;
+	} else {
+		//top
+		 mouseY += 10;
+	}
+
+	if(mouseX < $('#GoTVis').offset().left + $('#GoTVis').outerWidth()/2 ){
+		//left side
+		mouseX -= $('#node-info').outerWidth() + 10;
+
+		if(mouseX  < 0){
+			mouseX = 10;
+		}
+
+	} else {
+		//right side
+		mouseX += 10;
+
+		if(mouseX + $("#node-info").outerWidth() > $(window).width() - 20){
+			mouseX = $(window).width() - 10 - $("#node-info").outerWidth();
+		}
+	}
+
+	if(e.pageY + $('#node-info').outerHeight() + 20 > $(document).height() ){
+		mouseY = e.pageY - 20 - $('#node-info').outerHeight();
+	}
+
+	$('.got-popup').css({
+		top: mouseY,
+		left: mouseX
+	})
+}
 
 
 
