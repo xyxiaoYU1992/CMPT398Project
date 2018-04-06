@@ -2,16 +2,13 @@
 // Author: Ruida Xie & Tong Wang
 
 // Set up geometric size
-// var diameter = 940;
-// var radius = diameter / 2;
-// var innerRadius = radius - 270;
+
 $("#btn-death").click(function(){
     $("#GoTVis").empty();
     var margin = {left:180, top:40, right:120, bottom:50},
     width = Math.max( Math.min(window.innerWidth, 1100) - margin.left - margin.right - 20, 400),
     height = Math.max( Math.min(window.innerHeight - 250, 900) - margin.top - margin.bottom - 20, 400),
-    // width = 1900;
-    // height = 1900;
+
     innerRadius = Math.min(width * 0.33, height * .45),
     outerRadius = innerRadius * 1.05;
 
@@ -36,7 +33,7 @@ $("#btn-death").click(function(){
     // Set up appearence 
     loom.padAngle(0.09)
         .widthInner(30)
-        .heightInner(20) // TO-DO
+        .heightInner(20)
         .emptyPerc(0.2)
 
     var arc = d3.arc()
@@ -77,10 +74,8 @@ $("#btn-death").click(function(){
     d3.csv('data/thrones_characters.csv', function (data) {
         characters = data;
         // console.log(characters);
-        //separate the allengiance into an array
+        // separate the deathcause into an array
         for(var i = 0; i < numChars; i++){
-            //console.log(characters[i].houseallegiance);
-            //characters[i].houseallegiance = characters[i].houseallegiance.split(", ");
             characters[i].deathcause = characters[i].deathcause.split(", ");
         }
         // Clean raw data, transform it into list of object
@@ -107,8 +102,6 @@ $("#btn-death").click(function(){
         }
         //test the housesDict after input the data
         cleanedCharsJSON = JSON.stringify(cleanedChars);
-        // console.log(cleanedCharsJSON);
-        console.log(cleanedChars);
 
         var nestedChar = d3.nest()
             .key(function(d) {
@@ -123,9 +116,7 @@ $("#btn-death").click(function(){
             return deathCauseOrder.indexOf(a) - deathCauseOrder.indexOf(b); 
         }
         // Set more loom functions
-        // TO-DO: the heightInner should be changed
         loom.sortSubgroups(sortCharacter)
-            .sortGroups(d3.ascending)
             .heightInner(innerRadius*2.35/deathCauseOrder.length);
         // Color for the unique houses
         var colors = ["#5a3511", "#47635f", "#223e15", "#FF0000", "#0d1e25", "#53821a", "#4387AA", "#770000", 
@@ -154,13 +145,6 @@ $("#btn-death").click(function(){
             .attr("class", "value-title")
             .attr("x", 0)
             .attr("y", -innerRadius*5/6 - 85);
-        
-        // //The character pieces  
-        // titles.append("text")
-        //     .attr("class", "character-note")
-        //     .attr("x", 0)
-        //     .attr("y", innerRadius/2)
-        //     .attr("dy", "0.35em");
 
         // Draw outer arcs
         var houseArcs = g.append("g")
@@ -293,11 +277,11 @@ $("#btn-death").click(function(){
                     .style("opacity", function(s) {
                         return s.outer.innername !== d.name ? fadeOpacity : 1;
                     }); 
-                //Update the appearance count of the outer labels
+                // Update the appearance count of the outer labels
                 var characterData = loom(cleanedChars).filter(function(s) { return s.outer.innername === d.name; });
                 d3.selectAll(".outer-label-value")
                     .text(function(s,i){
-                        //Find which characterData is the correct one based on house
+                        // Find which characterData is the correct one based on house
                         var hou = characterData.filter(function(c) { return c.outer.outername === s.outername; });
                         if(hou.length === 0) {
                             var value = 0;
@@ -306,7 +290,7 @@ $("#btn-death").click(function(){
                         }
                         return value + (value === 1 ? " episode" : " episodes");
                     });
-                //Hide the arc where the character doesn't loyal to
+                // Hide the arc where the character doesn't loyal to
                 d3.selectAll(".arc-wrapper")
                     .transition()
                     .style("opacity", function(s) {
@@ -314,7 +298,7 @@ $("#btn-death").click(function(){
                         var hou = characterData.filter(function(c) { return c.outer.outername === s.outername; });
                         return hou.length === 0 ? 0.1 : 1;
                     });
-                //Update the title to show the total appearance count of the character
+                // Update the title to show the total appearance count of the character
                 d3.selectAll(".texts")
                     .transition()
                     .style("opacity", 1);   
@@ -326,47 +310,24 @@ $("#btn-death").click(function(){
                         if (appear[0].value > 1) { return "killed " + appear[0].value + " major characters"; }
                         else {return "killed " + appear[0].value + " major character";}
                     });
-                //Show the character note
-                // d3.selectAll(".character-note")
-                //  .text(characterNotes[d.name])
-                //  .call(wrap, 2.25*pullOutSize);      
+    
             })
             .on("mouseout", function(d) {
-                //Put the string opacity back to normal
+                // Put the string opacity back to normal
                 d3.selectAll(".string")
                     .transition()
                     .style("opacity", defaultOpacity);
-                //Return the word count to what it was
+                // Return the word count to what it was
                 d3.selectAll(".outer-label-value")  
                     .text(function(s,i){ return s.value + " episodes"; });
-                //Show all arcs again
+                // Show all arcs again
                 d3.selectAll(".arc-wrapper")
                     .transition()
                     .style("opacity", 1);
-                //Hide the title
+                // Hide the title
                 d3.selectAll(".texts")
                     .transition()
                     .style("opacity", 0);
             });
     });
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

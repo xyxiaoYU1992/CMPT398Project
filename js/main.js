@@ -2,22 +2,22 @@
 // Author: Ruida Xie & Tong Wang
 
 // Set up geometric size
-var margin = {left:180, top:40, right:120, bottom:50},
-    width = Math.max( Math.min(window.innerWidth, 1100) - margin.left - margin.right - 20, 400),
-    height = Math.max( Math.min(window.innerHeight - 250, 900) - margin.top - margin.bottom - 20, 400),
-    // width = 1200;
-    // height = 1200;
+var margin = {left:150, top:50, right:150, bottom:50},
+    //width = Math.max( Math.min(window.innerWidth, 1100) - margin.left - margin.right - 20, 400),
+    //height = Math.max( Math.min(window.innerHeight - 250, 900) - margin.top - margin.bottom - 20, 400),
+    width = 1400;
+    height = 1200;
     innerRadius = Math.min(width * 0.33, height * .45),
     outerRadius = innerRadius * 1.05;
 
-width = outerRadius * 2 + margin.right + margin.left;
+width = outerRadius * 2.6 + margin.right + margin.left;
 height = outerRadius * 2 + margin.top + margin.bottom;
 
-var newFontSize = Math.min(70, Math.max(40, innerRadius * 62.5 / 250));
+var newFontSize = Math.min(80, Math.max(40, innerRadius * 62.5 / 250));
 d3.select("html").style("font-size", newFontSize + "%");
 
 // Set up necessary parameters
-var pullOutSize = 20 + 30/135 * innerRadius;
+var pullOutSize = 120 + 20/135 * innerRadius;
 var defaultOpacity = 0.85,
     fadeOpacity = 0.075;
 
@@ -29,9 +29,9 @@ var loom = d3.loom()
     .outer(function(d){ return d.houseallegiance})
 
 // Set up appearence 
-loom.padAngle(0.05)
-    .widthInner(30)
-    .heightInner(20) // TO-DO
+loom.padAngle(0.07)
+    .widthInner(40)
+    .heightInner(18)
     .emptyPerc(0.3)
 
 var arc = d3.arc()
@@ -44,8 +44,8 @@ var string = d3.string()
 
 // Create SVG
 var svg = d3.select("#GoTVis").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("width", 1800 + margin.left + margin.right)
+    .attr("height", 1200 + margin.top + margin.bottom);
 
 // Create data var
 var characters; // read from csv
@@ -75,13 +75,13 @@ var characterOrder = ["Tyrion Lannister", "Cersei Lannister", "Daenerys Targarye
 // Read data
 d3.csv('data/thrones_characters.csv', function (data) {
     characters = data;
-    // console.log(characters);
+
     //separate the allengiance into an array
     for(var i = 0; i < numChars; i++){
         //console.log(characters[i].houseallegiance);
         characters[i].houseallegiance = characters[i].houseallegiance.split(", ")
     }
-    // console.log(characters);
+
     // Find the total number of appearance per house
     // Create a House dictionary to store the houses and its members appearence infomation
     for(var i = 0; i < numChars; i++){
@@ -89,8 +89,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
              housesDict[characters[i].houseallegiance[j]] = {appeared:0};
         }
     }
-    //test the housesDict appeared should be all 0
-    //console.log(housesDict);
+
     for(var i = 0; i < numChars; i++){
         for(var j = 0; j < characters[i].houseallegiance.length; j++){
              if(characters[i].houseallegiance[j] in housesDict){
@@ -118,15 +117,8 @@ d3.csv('data/thrones_characters.csv', function (data) {
                              , season: characters[i].season, status: characters[i].status});
         }
     }
-    //test the housesDict after input the data
     cleanedCharsJSON = JSON.stringify(cleanedChars);
-    // console.log(cleanedCharsJSON);
-    // console.log(cleanedChars);
-    // console.log(housesDict);
-    // console.log(Object.keys(housesDict));
-// });
 
-// d3.json(cleanedCharsJSON, function (error, dataAgg) {
     var nestedChar = d3.nest()
         .key(function(d) {
             return d.name;
@@ -142,9 +134,7 @@ d3.csv('data/thrones_characters.csv', function (data) {
         return characterOrder.indexOf(a) - characterOrder.indexOf(b); 
     }
     // Set more loom functions
-    // TO-DO: the heightInner should be changed
-    loom.sortSubgroups(sortCharacter)
-        .heightInner(innerRadius*2.35/characterOrder.length);
+    loom.sortSubgroups(sortCharacter);
     // Color for the unique houses
     var colors = ["#5a3511", "#47635f", "#223e15", "#FF0000", "#0d1e25", "#53821a", "#4387AA", "#770000", 
                   "#373F41", "#602317", "#8D9413", "#c17924", "#3C7E16", "#DC143C", "#483D8B", "#800080", 
@@ -167,19 +157,12 @@ d3.csv('data/thrones_characters.csv', function (data) {
     titles.append("text")
         .attr("class", "name-title")
         .attr("x", 0)
-        .attr("y", -innerRadius*5/6 - 105);
+        .attr("y", -innerRadius*5/6 - 155);
         
     titles.append("text")
         .attr("class", "value-title")
         .attr("x", 0)
-        .attr("y", -innerRadius*5/6 - 85);
-    
-    // //The character pieces  
-    // titles.append("text")
-    //     .attr("class", "character-note")
-    //     .attr("x", 0)
-    //     .attr("y", innerRadius/2)
-    //     .attr("dy", "0.35em");
+        .attr("y", -innerRadius*5/6 - 125);
 
     // Draw outer arcs
     var houseArcs = g.append("g")
@@ -290,8 +273,8 @@ d3.csv('data/thrones_characters.csv', function (data) {
 		.style("opacity", defaultOpacity);
 
 	// Draw inner labels
-	//The text also needs to be displaced in the horizontal directions
-	//And also rotated with the offset in the clockwise direction
+	// The text also needs to be displaced in the horizontal directions
+	// And also rotated with the offset in the clockwise direction
 	var innerLabels = g.append("g")
 		.attr("class","inner-labels")
 	    .selectAll("text")
@@ -313,8 +296,6 @@ d3.csv('data/thrones_characters.csv', function (data) {
                     tempInnerInfo = characters[i];
                 }
             }
-            // console.log(tempInnerInfo)
-
 			//Show all the strings of the highlighted character and hide all else
 		    d3.selectAll(".string")
 		      	.transition()
@@ -351,15 +332,10 @@ d3.csv('data/thrones_characters.csv', function (data) {
 			d3.select(".value-title")
 				.text(function() {
 					var appear = nestedChar.filter(function(s) { return s.key === d.name; });
-					return appear[0].value;
+					return "Appeared in " + tempInnerInfo.appeared + " episodes";
 				});
 			//Show the character note
-			// d3.selectAll(".character-note")
-			// 	.text(characterNotes[d.name])
-            // 	.call(wrap, 2.25*pullOutSize);
             $("#node-info").empty();
-            // console.log(tempInnerInfo);
-            // console.log(tempInnerInfo.houseallegiance);
             $("#charTemplate").tmpl(
                 {              
                     name: tempInnerInfo.name,
@@ -374,7 +350,6 @@ d3.csv('data/thrones_characters.csv', function (data) {
                     portrayed: tempInnerInfo.portrayed                
                 }
             ).appendTo( "#node-info");
-            // console.log(tempInnerInfo.deathcause)
             var houses = tempInnerInfo.houseallegiance;
             $.each(houses, function(i, t){
                 $("#listTemplate").tmpl( {item: t}).appendTo( "#node-house-references .node-data" );
@@ -418,17 +393,12 @@ function setPopupPosition(e){
 	e = jQuery.event.fix(e);
 	mouseX = e.pageX;
     mouseY = e.pageY;
-    // console.log(mouseY);
-    // console.log($('#GoTVis').offset().top);
-    // console.log($('#GoTVis').outerHeight()/2);
 
 	if(mouseY < $('#GoTVis').offset().top + $('#GoTVis').outerHeight()/2){
 		//bottom
-        // mouseY -= $('#node-info').outerHeight() + 10;
         mouseY += 10;
 	} else {
 		//top
-        // mouseY += 10;
         mouseY -= $('#node-info').outerHeight() + 10
 	}
 
@@ -458,22 +428,3 @@ function setPopupPosition(e){
 		left: mouseX
 	})
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
